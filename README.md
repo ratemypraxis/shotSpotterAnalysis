@@ -1,16 +1,16 @@
 # Analysis of ShotSpotter data in Chicago
 [Written piece linked here](https://medium.com/@sh4712/is-ai-over-policing-chicagos-communities-of-color-3d2c2374695e)
 
-# Data Sources
+## Data Sources
 Shotspotter Activity from Chicago Data Portal
 Zip Code Boundary shapefile from Chicago Data Portal
 Police District Boundary shapefile from Chicago Data Portal 
 2022 5-year ACS data from Census
 
-# R Process
+## R Process
 I prepared some csv datasets in R before bringing things to QGIS, my R project and script with inline comments detailing the process can be found at this link. 
 
-# QGIS Process
+## QGIS Process
 After bringing in race and zip code data from ACS in R, I created a new data
 
 

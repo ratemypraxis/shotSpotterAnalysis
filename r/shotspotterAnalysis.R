@@ -3,13 +3,14 @@ library(tidyverse)
 library(tidycensus)
 library(lubridate)
 library(dplyr)
+library(ggplot2)
 
 #census_api_key("2a9f615b1e992480fcd104f8b589915e06eed64b", install = TRUE)
 
 #view variables for acs in 2022 
 v22 <- load_variables(2022, "acs5", cache = TRUE)
 
-#getting race by status as not latino + total latino + total pop
+#getting race by status as not latino + total latino + total pop + income
 vars <- c(c(totalPop = "B01003_001"),c(income = "B19013_001"), c(white = "B03002_003"),c(black = "B03002_004"),c(latino = "B03002_012"), c(asian = "B03002_006"), c(pi = "B03002_007"),c(native = "B03002_005"), c(other = "B03002_008"), c(mixed = "B03002_009"))
 
 # getting ACS data from Chicago/Cook tracts based on variables above and for the last full year explored in the other dataset
@@ -58,9 +59,6 @@ race_per_cap <- acs_wide %>%
 # Select relevant columns
 race_per_cap <- race_per_cap %>%
   dplyr::select(zip_code, starts_with("per_capita_"))
-  
-income_data <- race_per_cap %>%
-  dplyr::select(zip_code, per_capita_income)
 
 # Save the per capita dataset
 write_csv(race_per_cap, "chi_zip_race_per_cap.csv")
@@ -81,13 +79,13 @@ ss_alerts_by_district <- ss_data %>%
   summarise(events = n())
 
 # loading in list of zip codes within ShotSpotter activated police districs (created manually in QGIS)
-ss_zips <- st_read("ssZips.csv")
+ss_zips <- read_csv("ssZips.csv")
 
 medIncome <- acs_wide %>%
   dplyr::select(zip_code, income)
 
 medIncome <- medIncome %>%
-  mutate(zip_code = as.character(zipcode))
+  mutate(zip_code = as.character(zip_code))
 
 #ssZipIncome <- inner_join(ss_zips, medIncome, by = "zipcode")
 
@@ -99,13 +97,47 @@ ssInc <- shotSpotterIncome %>%
 
 ssInc <- ssInc[order(ssInc$income), ]
 
-#color the zips with true shotspotter values
+#bar plot 1
 colors <- ifelse(ssInc$shotspotter, "#297AB7", "white")
 par(family = "Ubuntu Mono", col.axis = "white", col.lab = "white", col.main = "white")
-par(bg = "black")
+par(bg = "#232227")
 barplot(height = ssInc$income, names.arg = rep("", nrow(ssInc)), col = colors, 
         main = "Income & ShotSpotter Usage by Zip Code",
         xlab = "Zip Code", ylab = "Income", space = 0.5, yaxt="n")
-axis(side = 2, at = pretty(ssInc$income), labels = paste0(pretty(ssInc$income) / 1000, "k"))
 grid(col = "darkgrey")
 par(las = 1)
+
+ss_all <- left_join(ssInc, race_per_cap, by = "zip_code")
+
+ss_all <- ss_all %>%
+  group_by(zip_code) %>%
+  summarise(across(everything(), sum))  
+
+ssStats <- ss_all %>%
+  mutate(majority_race = case_when(
+    per_capita_white > 0.5 ~ "majority White",
+    per_capita_black > 0.5 ~ "majority Black",
+    per_capita_latino > 0.5 ~ "majority Latino",
+    TRUE ~ NA_character_
+  )) %>%
+  filter(!is.na(majority_race))
+
+ssStats <- ssStats %>%
+  select(-starts_with("per_capita_"))
+
+#grouped bar plot 2 
+ggplot(ssStats, aes(x = majority_race, fill = factor(shotspotter))) +
+  geom_bar(position = ifelse(levels(factor(ssStats$majority_race))[1] == "Latino", "stack", "dodge"), color = "black", stat = "count") +
+  theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "#232227"),
+    panel.grid.major = element_line(color = "white", linetype = "dashed"),
+    panel.grid.minor = element_line(color = "white", linetype = "dashed"),
+    text = element_text(color = "white", family = "Ubuntu Mono")
+  ) +
+  scale_fill_manual(values = c("white", "#297AB7"), name = "ShotSpotter", labels = c("False", "True")) +
+  labs(
+    x = "Majority Race",
+    y = "Zips",
+    title = "Total Zip Codes by Majority Race and ShotSpotter Usage"
+  )

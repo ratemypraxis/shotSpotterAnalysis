@@ -2,10 +2,10 @@
 [Written piece linked here](https://medium.com/@sh4712/is-ai-over-policing-chicagos-communities-of-color-3d2c2374695e)
 
 ## Data Sources
-[Shotspotter Activity](https://data.cityofchicago.org/Public-Safety/Violence-Reduction-Shotspotter-Alerts/3h7q-7mdb/data_preview) from Chicago Data Portal.
-[Zip Code Boundary shapefile](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-ZIP-Codes/gdcf-axmw) from Chicago Data Portal.
-[Police District Boundary shapefile](https://data.cityofchicago.org/Public-Safety/Boundaries-Police-Districts-current-/fthy-xz3r) from Chicago Data Portal.
-2022 5-year ACS data from Census.
+[Shotspotter Activity](https://data.cityofchicago.org/Public-Safety/Violence-Reduction-Shotspotter-Alerts/3h7q-7mdb/data_preview) from Chicago Data Portal  
+[Zip Code Boundary shapefile](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-ZIP-Codes/gdcf-axmw) from Chicago Data Portal  
+[Police District Boundary shapefile](https://data.cityofchicago.org/Public-Safety/Boundaries-Police-Districts-current-/fthy-xz3r) from Chicago Data Portal  
+[2022 5-year ACS data](https://www.census.gov/programs-surveys/acs/) from Census  
 
 ## R Process
 I prepared some csv datasets in R before bringing things to QGIS, my R project and script with inline comments detailing the process can be found at this link. 

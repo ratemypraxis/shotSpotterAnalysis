@@ -1,5 +1,6 @@
 # Analysis of ShotSpotter data in Chicago
 [Written piece linked here](https://medium.com/@sh4712/is-ai-over-policing-chicagos-communities-of-color-3d2c2374695e)
+![map of shotspotter usage in Chicago alongside race](https://medium.com/@sh4712/is-ai-over-policing-chicagos-communities-of-color-3d2c2374695e)
 
 ## Data Sources
 [Shotspotter Activity](https://data.cityofchicago.org/Public-Safety/Violence-Reduction-Shotspotter-Alerts/3h7q-7mdb/data_preview) from Chicago Data Portal  
